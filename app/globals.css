@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-canvas: #f7f6f2;
+  --color-surface: #ffffff;
+  --color-forest: #183d32;
+  --color-forest-hover: #21503f;
+  --color-sage: #557963;
+  --color-gold: #c7a45b;
+  --color-gold-deep: #8f6f2e;
+  --color-ink: #20251f;
+  /* Slightly darker than #73776F so small text keeps WCAG AA contrast on the canvas. */
+  --color-muted: #676b63;
+  --color-line: #e7e4dc;
+  --color-danger: #a8402f;
+
+  --font-sans: var(--font-hind), "Noto Sans Bengali", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-tiro), "Noto Serif Bengali", Georgia, serif;
+  --font-script: var(--font-galada), var(--font-tiro), serif;
+
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-float-slow: float 9s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -6px;
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    line-height: 1.65;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-gold) 35%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-forest);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Native <details> FAQ marker */
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
