@@ -25,6 +25,8 @@ type Props = {
   recipientName: string;
   /** False when the current form state can't be exported (e.g. empty name). */
   enabled: boolean;
+  /** Shown when `enabled` is false. */
+  disabledHint?: string;
   onReset: () => void;
 };
 
@@ -36,7 +38,15 @@ function pageUrl() {
   return `${window.location.origin}${window.location.pathname}`;
 }
 
-export function CertificateActions({ getNode, exportKey, themeId, recipientName, enabled, onReset }: Props) {
+export function CertificateActions({
+  getNode,
+  exportKey,
+  themeId,
+  recipientName,
+  enabled,
+  disabledHint = "ডাউনলোড বা শেয়ার করার আগে বন্ধুর নামটা লিখে দাও।",
+  onReset,
+}: Props) {
   const [busy, setBusy] = useState<Busy>(null);
   const [feedback, setFeedback] = useState<Feedback>(null);
   const [showFallback, setShowFallback] = useState(false);
@@ -206,7 +216,7 @@ export function CertificateActions({ getNode, exportKey, themeId, recipientName,
           </p>
         )}
         {!enabled && !feedback && (
-          <p className="text-sm text-muted">ডাউনলোড বা শেয়ার করার আগে বন্ধুর নামটা লিখে দাও।</p>
+          <p className="text-sm text-muted">{disabledHint}</p>
         )}
       </div>
 

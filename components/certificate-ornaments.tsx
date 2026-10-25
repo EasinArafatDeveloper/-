@@ -1,7 +1,7 @@
 import { useId } from "react";
 
 /* All ornaments are inline SVG so they export perfectly to PNG.
-   No text is drawn inside SVG — Bengali shaping stays in HTML. */
+   No Bengali text is drawn inside SVG — shaping stays in HTML. */
 
 type ColorProps = { color: string };
 
@@ -9,129 +9,203 @@ function safeId(raw: string) {
   return raw.replace(/[^a-zA-Z0-9_-]/g, "");
 }
 
-export function CornerFlourish({ color, className }: ColorProps & { className?: string }) {
+/** Ornate gold corner: double bracket, scrolls, leaves and dots. Top-left orientation. */
+export function CornerFiligree({ color }: ColorProps) {
   return (
-    <svg viewBox="0 0 72 72" width="72" height="72" className={className} aria-hidden="true">
+    <svg viewBox="0 0 70 70" width="70" height="70" aria-hidden="true">
       <g fill="none" stroke={color} strokeLinecap="round">
-        <path d="M6 34 C6 18 18 6 34 6" strokeWidth="1.2" />
-        <path d="M6 50 C10 32 21 23 27 27 C31 30 27 36 23 33" strokeWidth="1" />
-        <path d="M50 6 C32 10 23 21 27 27 C30 31 36 27 33 23" strokeWidth="1" />
-        <path d="M12 12 L19 19" strokeWidth="1" />
+        <path d="M5 46 V16 Q5 5 16 5 H46" strokeWidth="1.6" />
+        <path d="M11 38 V19 Q11 11 19 11 H38" strokeWidth="0.9" />
+        <path d="M17 17 C27 15 31 21 29 27 C27.5 31 22 30 22.5 26 C23 23 27 23.5 27 26" strokeWidth="1.2" />
+        <path d="M46 5 C52 5 56 8 58 13" strokeWidth="1" />
+        <path d="M5 46 C5 52 8 56 13 58" strokeWidth="1" />
       </g>
       <g fill={color}>
-        <circle cx="6" cy="6" r="2.4" />
-        <circle cx="6" cy="54" r="1.4" />
-        <circle cx="54" cy="6" r="1.4" />
-        <rect x="18.5" y="18.5" width="6" height="6" transform="rotate(45 21.5 21.5)" />
-        <path d="M33 34 q4 -1 6 3 q-4 1 -6 -3z" opacity="0.8" />
-        <path d="M34 33 q-1 4 3 6 q1 -4 -3 -6z" opacity="0.8" />
+        <path d="M46 5 C52 1 60 2 64 7 C58 9 51 9 46 5Z" />
+        <path d="M5 46 C1 52 2 60 7 64 C9 58 9 51 5 46Z" />
+        <path d="M30 9 C34 6 39 6 42 9 C38 11 34 11 30 9Z" opacity="0.8" />
+        <path d="M9 30 C6 34 6 39 9 42 C11 38 11 34 9 30Z" opacity="0.8" />
+        <circle cx="5" cy="5" r="2.6" />
+        <circle cx="64.5" cy="7" r="1.6" />
+        <circle cx="7" cy="64.5" r="1.6" />
+        <rect x="14" y="14" width="5" height="5" transform="rotate(45 16.5 16.5)" />
       </g>
     </svg>
   );
 }
 
-export function SparkleCluster({ colors, className }: { colors: [string, string, string]; className?: string }) {
+export function SparkleCluster({ colors }: { colors: [string, string, string] }) {
   const star = "M0 -10 C1.2 -2.4 2.4 -1.2 10 0 C2.4 1.2 1.2 2.4 0 10 C-1.2 2.4 -2.4 1.2 -10 0 C-2.4 -1.2 -1.2 -2.4 0 -10Z";
   return (
-    <svg viewBox="0 0 72 72" width="72" height="72" className={className} aria-hidden="true">
-      <path d={star} transform="translate(20 20) scale(1.25)" fill={colors[0]} />
-      <path d={star} transform="translate(44 12) scale(0.55)" fill={colors[1]} />
-      <path d={star} transform="translate(12 44) scale(0.55)" fill={colors[2]} />
-      <circle cx="40" cy="34" r="3" fill={colors[2]} />
-      <circle cx="30" cy="48" r="2" fill={colors[1]} />
-      <path d="M50 26 q4 -5 8 0 t8 0" fill="none" stroke={colors[0]} strokeWidth="2" strokeLinecap="round" />
+    <svg viewBox="0 0 70 70" width="70" height="70" aria-hidden="true">
+      <path d={star} transform="translate(18 18) scale(1.2)" fill={colors[0]} />
+      <path d={star} transform="translate(42 10) scale(0.5)" fill={colors[1]} />
+      <path d={star} transform="translate(10 42) scale(0.5)" fill={colors[2]} />
+      <circle cx="36" cy="30" r="2.6" fill={colors[2]} />
+      <circle cx="26" cy="44" r="1.8" fill={colors[1]} />
     </svg>
   );
 }
 
-/** Horizontal laurel sprig; mirror it with `flip`. */
-export function LaurelSprig({ color, flip = false }: ColorProps & { flip?: boolean }) {
-  const leaves = [8, 19, 30, 41, 52, 62];
+export function Crown({ color }: ColorProps) {
+  return (
+    <svg viewBox="0 0 44 28" width="40" height="26" aria-hidden="true">
+      <path d="M5 21 L3 7 L13 14 L22 3 L31 14 L41 7 L39 21 Z" fill={color} />
+      <rect x="5" y="22.5" width="34" height="3.5" rx="1" fill={color} />
+      <circle cx="3" cy="6.5" r="2.2" fill={color} />
+      <circle cx="22" cy="2.6" r="2.4" fill={color} />
+      <circle cx="41" cy="6.5" r="2.2" fill={color} />
+      <path d="M12 18 L32 18" stroke="#fff" strokeOpacity="0.35" strokeWidth="1.2" />
+    </svg>
+  );
+}
+
+/** A curved laurel branch with leaves along a quadratic curve. Grows upward, opening to the right. */
+export function LaurelBranch({ color, height = 80, flip = false }: ColorProps & { height?: number; flip?: boolean }) {
+  const p0 = { x: 30, y: 78 };
+  const p1 = { x: 2, y: 46 };
+  const p2 = { x: 24, y: 4 };
+  const at = (t: number) => ({
+    x: (1 - t) ** 2 * p0.x + 2 * (1 - t) * t * p1.x + t * t * p2.x,
+    y: (1 - t) ** 2 * p0.y + 2 * (1 - t) * t * p1.y + t * t * p2.y,
+  });
+  const tangent = (t: number) => {
+    const dx = 2 * (1 - t) * (p1.x - p0.x) + 2 * t * (p2.x - p1.x);
+    const dy = 2 * (1 - t) * (p1.y - p0.y) + 2 * t * (p2.y - p1.y);
+    return (Math.atan2(dy, dx) * 180) / Math.PI;
+  };
+  const leaves = [0.12, 0.24, 0.36, 0.48, 0.6, 0.72, 0.84];
   return (
     <svg
-      viewBox="0 0 74 22"
-      width="74"
-      height="22"
+      viewBox="0 0 40 82"
+      width={(height * 40) / 82}
+      height={height}
       aria-hidden="true"
       style={flip ? { transform: "scaleX(-1)" } : undefined}
     >
-      <path d="M2 11 Q38 15 72 11" fill="none" stroke={color} strokeWidth="1" strokeLinecap="round" />
-      {leaves.map((x, i) => {
-        const up = i % 2 === 0;
-        const size = 1 - i * 0.07;
+      <path d={`M${p0.x} ${p0.y} Q${p1.x} ${p1.y} ${p2.x} ${p2.y}`} fill="none" stroke={color} strokeWidth="1.4" strokeLinecap="round" />
+      {leaves.map((t, i) => {
+        const pt = at(t);
+        const angle = tangent(t);
+        const size = 1 - t * 0.35;
         return (
-          <ellipse
-            key={x}
-            cx={x + 2}
-            cy={up ? 7.4 : 15}
-            rx={5.6 * size}
-            ry={2.2 * size}
-            fill={color}
-            transform={`rotate(${up ? -28 : 28} ${x + 2} ${up ? 7.4 : 15})`}
-          />
+          <g key={t} transform={`translate(${pt.x.toFixed(2)} ${pt.y.toFixed(2)}) rotate(${angle.toFixed(1)})`}>
+            <ellipse cx={4.5 * size} cy={i % 2 ? 4 : -4} rx={6 * size} ry={2.4 * size} fill={color} transform={`rotate(${i % 2 ? 32 : -32})`} />
+            <ellipse cx={4.5 * size} cy={i % 2 ? -3.4 : 3.4} rx={5 * size} ry={2 * size} fill={color} opacity="0.85" transform={`rotate(${i % 2 ? -30 : 30})`} />
+          </g>
         );
       })}
-      <circle cx="72" cy="11" r="1.6" fill={color} />
+      <ellipse cx={p2.x} cy={p2.y - 1} rx="2.2" ry="4" fill={color} />
     </svg>
   );
 }
 
-export function Star({ color, size = 14 }: ColorProps & { size?: number }) {
+/** ── ★ ── divider with three stars. */
+export function StarRule({ color, width = 200 }: ColorProps & { width?: number }) {
+  const mid = width / 2;
+  const star = (cx: number, r: number) => {
+    const pts = Array.from({ length: 10 }, (_, i) => {
+      const a = (Math.PI / 5) * i - Math.PI / 2;
+      const rad = i % 2 === 0 ? r : r * 0.45;
+      return `${(cx + rad * Math.cos(a)).toFixed(2)},${(7 + rad * Math.sin(a)).toFixed(2)}`;
+    }).join(" ");
+    return <polygon key={cx} points={pts} fill={color} />;
+  };
   return (
-    <svg viewBox="-10 -10 20 20" width={size} height={size} aria-hidden="true">
-      <path
-        d="M0 -10 L2.6 -3.4 L9.5 -3.1 L4.1 1.3 L5.9 8.1 L0 4.3 L-5.9 8.1 L-4.1 1.3 L-9.5 -3.1 L-2.6 -3.4Z"
-        fill={color}
-      />
+    <svg viewBox={`0 0 ${width} 14`} width={width} height="14" aria-hidden="true">
+      <path d={`M2 7 H${mid - 30} M${mid + 30} 7 H${width - 2}`} stroke={color} strokeWidth="0.9" />
+      {star(mid - 18, 3.4)}
+      {star(mid, 6)}
+      {star(mid + 18, 3.4)}
     </svg>
   );
 }
 
-export function DiamondRule({ color, width = 180 }: ColorProps & { width?: number }) {
+/** Line with a small scroll ornament in the middle (under the name). */
+export function ScrollRule({ color, width = 300 }: ColorProps & { width?: number }) {
   const mid = width / 2;
   return (
-    <svg viewBox={`0 0 ${width} 12`} width={width} height="12" aria-hidden="true">
-      <path d={`M4 6 H${mid - 12} M${mid + 12} 6 H${width - 4}`} stroke={color} strokeWidth="0.9" />
-      <rect x={mid - 4} y="2" width="8" height="8" transform={`rotate(45 ${mid} 6)`} fill={color} />
-      <circle cx={mid - 9} cy="6" r="1.4" fill={color} />
-      <circle cx={mid + 9} cy="6" r="1.4" fill={color} />
-      <circle cx="3" cy="6" r="1.2" fill={color} />
-      <circle cx={width - 3} cy="6" r="1.2" fill={color} />
+    <svg viewBox={`0 0 ${width} 16`} width={width} height="16" aria-hidden="true">
+      <path d={`M2 8 H${mid - 26} M${mid + 26} 8 H${width - 2}`} stroke={color} strokeWidth="1" />
+      <g fill="none" stroke={color} strokeWidth="1.2" strokeLinecap="round">
+        <path d={`M${mid - 24} 8 C${mid - 16} 8 ${mid - 12} 2 ${mid - 6} 4 C${mid - 2} 5 ${mid - 3} 10 ${mid - 7} 9`} />
+        <path d={`M${mid + 24} 8 C${mid + 16} 8 ${mid + 12} 2 ${mid + 6} 4 C${mid + 2} 5 ${mid + 3} 10 ${mid + 7} 9`} />
+      </g>
+      <path d={`M${mid} 3 L${mid + 3.5} 8 L${mid} 13 L${mid - 3.5} 8Z`} fill={color} />
     </svg>
   );
 }
 
-export function NameFlourish({ color }: ColorProps) {
+/** Line — label — line, used around "ধারখোর সম্মাননা". */
+export function SideLine({ color, flip = false }: ColorProps & { flip?: boolean }) {
   return (
-    <svg viewBox="0 0 260 14" width="260" height="14" aria-hidden="true">
+    <svg viewBox="0 0 70 8" width="70" height="8" aria-hidden="true" style={flip ? { transform: "scaleX(-1)" } : undefined}>
+      <path d="M2 4 H58" stroke={color} strokeWidth="1" />
+      <circle cx="63" cy="4" r="2.4" fill={color} />
+    </svg>
+  );
+}
+
+/** Banknotes with wings — the money flying away. */
+export function MoneyWings({ color, money }: ColorProps & { money: string }) {
+  return (
+    <svg viewBox="0 0 84 46" width="76" height="42" aria-hidden="true">
+      <g fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        {/* left wing */}
+        <path d="M30 22 C22 10 12 8 4 10 C10 13 12 15 13 17 C9 17 7 19 6 21 C12 21 15 22 17 24 C14 25 13 27 13 29 C20 27 25 26 30 27" fill="#fff" />
+        {/* right wing */}
+        <path d="M54 22 C62 10 72 8 80 10 C74 13 72 15 71 17 C75 17 77 19 78 21 C72 21 69 22 67 24 C70 25 71 27 71 29 C64 27 59 26 54 27" fill="#fff" />
+      </g>
+      {/* notes stack */}
+      <g transform="rotate(-14 42 26)">
+        <rect x="28" y="17" width="28" height="16" rx="2" fill={money} stroke={color} strokeWidth="1.4" />
+        <rect x="26" y="20" width="28" height="16" rx="2" fill={money} stroke={color} strokeWidth="1.4" />
+        <circle cx="40" cy="28" r="3.6" fill="none" stroke={color} strokeWidth="1.2" />
+        <path d="M30 24 h4 M46 32 h4" stroke={color} strokeWidth="1.2" strokeLinecap="round" />
+      </g>
+      <g stroke={color} strokeWidth="1.4" strokeLinecap="round">
+        <path d="M60 4 l3 -3 M66 9 l5 -2 M18 4 l-3 -3" />
+      </g>
+    </svg>
+  );
+}
+
+export function Smiley({ color, size = 18 }: ColorProps & { size?: number }) {
+  return (
+    <svg viewBox="0 0 20 20" width={size} height={size} aria-hidden="true">
+      <circle cx="10" cy="10" r="8.4" fill="none" stroke={color} strokeWidth="1.4" />
+      <circle cx="7.2" cy="8" r="1.1" fill={color} />
+      <circle cx="12.8" cy="8" r="1.1" fill={color} />
+      <path d="M6 11.6 C7.5 14.6 12.5 14.6 14 11.6" fill="none" stroke={color} strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+export function Signature({ color }: ColorProps) {
+  return (
+    <svg viewBox="0 0 120 40" width="112" height="37" aria-hidden="true">
       <path
-        d="M6 8 C60 2 100 12 130 7 C160 2 200 12 254 6"
+        d="M6 30 C14 30 20 8 26 6 C31 4 24 32 30 32 C35 32 38 14 42 14 C45 14 42 28 46 28 C52 28 58 16 64 18 C70 20 60 30 68 29 C78 28 92 20 114 18"
         fill="none"
         stroke={color}
-        strokeWidth="1.1"
+        strokeWidth="1.8"
         strokeLinecap="round"
+        strokeLinejoin="round"
       />
-      <circle cx="130" cy="7" r="2.2" fill={color} />
+      <path d="M4 36 C40 33 80 33 116 35" fill="none" stroke={color} strokeWidth="1" strokeLinecap="round" opacity="0.7" />
     </svg>
   );
 }
 
-export function Hourglass({ color }: ColorProps) {
+export function Swoosh({ color }: ColorProps) {
   return (
-    <svg viewBox="0 0 12 16" width="11" height="14" aria-hidden="true">
-      <path
-        d="M1.5 1h9M1.5 15h9M2.5 1c0 4 3.5 5 3.5 7S2.5 11 2.5 15M9.5 1c0 4-3.5 5-3.5 7s3.5 3 3.5 7"
-        fill="none"
-        stroke={color}
-        strokeWidth="1.2"
-        strokeLinecap="round"
-      />
-      <path d="M4 13.6 Q6 11 8 13.6Z" fill={color} />
+    <svg viewBox="0 0 70 12" width="64" height="11" aria-hidden="true">
+      <path d="M2 9 C20 2 46 2 68 6" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );
 }
 
-/** Rosette award seal. The label is HTML laid on top so Bengali shapes correctly. */
+/** Gold rosette seal with ribbon tails. The label is HTML laid on top. */
 export function SealGraphic({
   rim,
   inner,
@@ -144,65 +218,54 @@ export function SealGraphic({
   line: string;
 }) {
   const gradId = safeId(`seal-${useId()}`);
-  const points = Array.from({ length: 48 }, (_, i) => {
-    const angle = (i / 48) * Math.PI * 2;
-    const r = i % 2 === 0 ? 57 : 52.5;
+  const points = Array.from({ length: 56 }, (_, i) => {
+    const angle = (i / 56) * Math.PI * 2;
+    const r = i % 2 === 0 ? 57 : 53;
     return `${(60 + r * Math.cos(angle)).toFixed(2)},${(60 + r * Math.sin(angle)).toFixed(2)}`;
   }).join(" ");
 
   return (
-    <svg viewBox="0 0 120 138" width="100%" height="100%" aria-hidden="true">
+    <svg viewBox="0 0 120 140" width="100%" height="100%" aria-hidden="true">
       <defs>
-        <radialGradient id={gradId} cx="40%" cy="35%" r="70%">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.45" />
-          <stop offset="60%" stopColor="#ffffff" stopOpacity="0" />
+        <radialGradient id={gradId} cx="38%" cy="32%" r="75%">
+          <stop offset="0%" stopColor="#fff6d6" stopOpacity="0.9" />
+          <stop offset="45%" stopColor={inner} stopOpacity="1" />
+          <stop offset="100%" stopColor={rim} stopOpacity="1" />
         </radialGradient>
       </defs>
-      <path d="M38 92 L24 136 L36 128 L46 137 L58 100Z" fill={ribbon} />
-      <path d="M82 92 L96 136 L84 128 L74 137 L62 100Z" fill={ribbon} />
+      <path d="M36 92 L22 138 L35 129 L46 139 L58 100Z" fill={ribbon} />
+      <path d="M84 92 L98 138 L85 129 L74 139 L62 100Z" fill={ribbon} />
       <polygon points={points} fill={rim} />
-      <polygon points={points} fill={`url(#${gradId})`} />
-      <circle cx="60" cy="60" r="48" fill={inner} />
-      <circle cx="60" cy="60" r="44" fill="none" stroke={line} strokeWidth="0.9" strokeDasharray="2 2.6" />
-      <circle cx="60" cy="60" r="39.5" fill="none" stroke={line} strokeWidth="0.6" opacity="0.8" />
+      <circle cx="60" cy="60" r="50" fill={`url(#${gradId})`} />
+      <circle cx="60" cy="60" r="46" fill="none" stroke={line} strokeWidth="1" strokeDasharray="1.5 2.5" />
+      <circle cx="60" cy="60" r="41" fill="none" stroke={rim} strokeWidth="1.4" />
     </svg>
   );
 }
 
-/** Very faint decorative background — dots plus a soft ring watermark. */
-export function PaperPattern({ color, opacity = 0.07 }: ColorProps & { opacity?: number }) {
+/** Very faint decorative background dots. */
+export function PaperPattern({ color, opacity = 0.06 }: ColorProps & { opacity?: number }) {
   const patternId = safeId(`dots-${useId()}`);
   return (
-    <svg
-      className="pointer-events-none absolute inset-0"
-      width="100%"
-      height="100%"
-      aria-hidden="true"
-      style={{ opacity }}
-    >
+    <svg className="pointer-events-none absolute inset-0" width="100%" height="100%" aria-hidden="true" style={{ opacity }}>
       <defs>
         <pattern id={patternId} width="14" height="14" patternUnits="userSpaceOnUse">
           <circle cx="2" cy="2" r="0.9" fill={color} />
         </pattern>
       </defs>
       <rect width="100%" height="100%" fill={`url(#${patternId})`} />
-      <g fill="none" stroke={color} strokeWidth="1.2">
-        <circle cx="270" cy="300" r="170" />
-        <circle cx="270" cy="300" r="150" strokeDasharray="1 7" />
-        <circle cx="270" cy="300" r="128" />
-      </g>
     </svg>
   );
 }
 
 export function Confetti() {
   const bits: { x: number; y: number; c: string; r: number; shape: "dot" | "bar" | "tri" }[] = [
-    { x: 84, y: 150, c: "#7CC4A4", r: 4, shape: "dot" },
-    { x: 452, y: 168, c: "#B9A7E8", r: 4, shape: "dot" },
-    { x: 66, y: 330, c: "#F2CF88", r: 0, shape: "bar" },
-    { x: 470, y: 312, c: "#E9765B", r: 20, shape: "bar" },
-    { x: 92, y: 470, c: "#B9A7E8", r: 0, shape: "tri" },
-    { x: 446, y: 452, c: "#7CC4A4", r: 0, shape: "tri" },
+    { x: 70, y: 200, c: "#7CC4A4", r: 3.5, shape: "dot" },
+    { x: 468, y: 214, c: "#B9A7E8", r: 3.5, shape: "dot" },
+    { x: 58, y: 360, c: "#F2CF88", r: 0, shape: "bar" },
+    { x: 474, y: 350, c: "#E9765B", r: 20, shape: "bar" },
+    { x: 64, y: 470, c: "#B9A7E8", r: 0, shape: "tri" },
+    { x: 462, y: 462, c: "#7CC4A4", r: 0, shape: "tri" },
   ];
   return (
     <svg className="pointer-events-none absolute inset-0" width="100%" height="100%" aria-hidden="true">
@@ -210,16 +273,7 @@ export function Confetti() {
         if (b.shape === "dot") return <circle key={i} cx={b.x} cy={b.y} r={b.r} fill={b.c} />;
         if (b.shape === "bar")
           return (
-            <rect
-              key={i}
-              x={b.x}
-              y={b.y}
-              width="14"
-              height="5"
-              rx="2.5"
-              fill={b.c}
-              transform={`rotate(${b.r ? -35 : 35} ${b.x} ${b.y})`}
-            />
+            <rect key={i} x={b.x} y={b.y} width="13" height="5" rx="2.5" fill={b.c} transform={`rotate(${b.r ? -35 : 35} ${b.x} ${b.y})`} />
           );
         return <path key={i} d={`M${b.x} ${b.y} l7 -12 l7 12z`} fill={b.c} opacity="0.85" />;
       })}

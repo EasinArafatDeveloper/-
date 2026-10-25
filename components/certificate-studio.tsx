@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { PREFILL_EVENT, type PrefillDetail } from "@/lib/prefill";
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import { PartyPopper, PenLine } from "lucide-react";
 import {
@@ -19,7 +20,8 @@ import { DEFAULT_VALUES, validateCertificate, type CertificateFormValues } from 
 import { useTodayLabel } from "@/lib/use-today-label";
 import { cleanText } from "@/lib/utils";
 import { CertificateActions } from "./certificate-actions";
-import { CertificateForm } from "./certificate-form";
+import { CertificateForm, type CardMode } from "./certificate-form";
+import { PhotoError, preparePhoto } from "@/lib/photo";
 import { CertificatePreview } from "./certificate-preview";
 
 function prefersReducedMotion() {
@@ -32,8 +34,13 @@ export function CertificateStudio() {
   const [generated, setGenerated] = useState(false);
   const [revealKey, setRevealKey] = useState(0);
   const [announcement, setAnnouncement] = useState("");
+  const [mode, setMode] = useState<CardMode>("simple");
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [photoBusy, setPhotoBusy] = useState(false);
+  const [photoError, setPhotoError] = useState<string | null>(null);
 
   const cardRef = useRef<HTMLDivElement>(null);
+  const photoButtonRef = useRef<HTMLButtonElement>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
   const formTopRef = useRef<HTMLDivElement>(null);
   const previewTopRef = useRef<HTMLDivElement>(null);
@@ -58,14 +65,53 @@ export function CertificateStudio() {
       dateLabel: today,
       serial: serialFor(name || NAME_PLACEHOLDER),
       theme: getTheme(values.themeId),
+      photoMode: mode === "photo",
+      photo: mode === "photo" ? photo : null,
     };
-  }, [values, today]);
+  }, [values, today, mode, photo]);
+
+  const photoMissing = mode === "photo" && !photo;
+  const canExport = validation.success && !photoMissing;
 
   const exportKey = useMemo(
     () =>
-      JSON.stringify([view.name, view.title, view.tagline, view.issuer, view.dateLabel, view.theme.id]),
+      JSON.stringify([
+        view.name,
+        view.title,
+        view.tagline,
+        view.issuer,
+        view.dateLabel,
+        view.theme.id,
+        view.photoMode,
+        // A cheap fingerprint of the photo instead of the whole data URL.
+        view.photo ? `${view.photo.length}:${view.photo.slice(-48)}` : null,
+      ]),
     [view],
   );
+
+  const handlePhotoPick = useCallback(async (file: File) => {
+    setPhotoBusy(true);
+    setPhotoError(null);
+    try {
+      setPhoto(await preparePhoto(file));
+    } catch (error) {
+      setPhotoError(
+        error instanceof PhotoError ? error.message : "ছবিটা প্রসেস করা গেল না। অন্য একটা ছবি দিয়ে চেষ্টা করো।",
+      );
+    } finally {
+      setPhotoBusy(false);
+    }
+  }, []);
+
+  const handlePhotoRemove = useCallback(() => {
+    setPhoto(null);
+    setPhotoError(null);
+  }, []);
+
+  const handleModeChange = useCallback((next: CardMode) => {
+    setMode(next);
+    setPhotoError(null);
+  }, []);
 
   const handleChange = useCallback(
     <K extends keyof CertificateFormValues>(key: K, value: CertificateFormValues[K]) => {
@@ -76,6 +122,12 @@ export function CertificateStudio() {
 
   const handleSubmit = () => {
     setAttempted(true);
+    if (photoMissing) {
+      setPhotoError("ছবিসহ সার্টিফিকেটের জন্য বন্ধুর একটা ছবি দাও—অথবা ‘সাধারণ’ ধরন বেছে নাও।");
+      photoButtonRef.current?.focus();
+      setAnnouncement("");
+      return;
+    }
     if (!validation.success) {
       if (validation.errors.name) nameInputRef.current?.focus();
       else if (validation.errors.customTitle) document.getElementById("custom-title")?.focus();
@@ -99,8 +151,30 @@ export function CertificateStudio() {
     });
   };
 
+  // The hero's quick form sends name + title here, then we generate straight away.
+  useEffect(() => {
+    const onPrefill = (event: Event) => {
+      const { name, titleId } = (event as CustomEvent<PrefillDetail>).detail;
+      setValues((prev) => ({ ...prev, name, titleId, customTitle: "" }));
+      setAttempted(true);
+      setGenerated(true);
+      setRevealKey((k) => k + 1);
+      setAnnouncement(`${name}-এর সার্টিফিকেট তৈরি হয়েছে! এখন ডাউনলোড বা শেয়ার করতে পারো।`);
+      requestAnimationFrame(() => {
+        const isWide = window.matchMedia("(min-width: 1024px)").matches;
+        const target = isWide ? document.getElementById("generator") : previewTopRef.current;
+        target?.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
+      });
+    };
+    window.addEventListener(PREFILL_EVENT, onPrefill);
+    return () => window.removeEventListener(PREFILL_EVENT, onPrefill);
+  }, []);
+
   const handleReset = () => {
     setValues(DEFAULT_VALUES);
+    setMode("simple");
+    setPhoto(null);
+    setPhotoError(null);
     setAttempted(false);
     setGenerated(false);
     setAnnouncement("ফর্ম খালি করা হয়েছে। নতুন বন্ধুর নাম লেখো।");
@@ -114,7 +188,7 @@ export function CertificateStudio() {
     <MotionConfig reducedMotion="user">
       <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-12 xl:gap-16">
         {/* Form */}
-        <div ref={formTopRef} className="scroll-mt-6 rounded-[22px] border border-line bg-surface p-5 shadow-[0_1px_2px_rgba(32,37,31,0.04)] sm:p-7">
+        <div ref={formTopRef} className="scroll-mt-24 rounded-[22px] border border-line bg-surface p-5 shadow-[0_1px_2px_rgba(32,37,31,0.04)] sm:p-7">
           <div className="mb-6 flex items-center gap-3">
             <span className="grid size-10 place-items-center rounded-xl bg-forest/[0.07] text-forest">
               <PenLine className="size-5" aria-hidden="true" />
@@ -130,11 +204,19 @@ export function CertificateStudio() {
             onChange={handleChange}
             onSubmit={handleSubmit}
             nameInputRef={nameInputRef}
+            mode={mode}
+            onModeChange={handleModeChange}
+            photo={photo}
+            photoBusy={photoBusy}
+            photoError={photoError}
+            onPhotoPick={handlePhotoPick}
+            onPhotoRemove={handlePhotoRemove}
+            photoButtonRef={photoButtonRef}
           />
         </div>
 
         {/* Preview */}
-        <div ref={previewTopRef} className="scroll-mt-6 lg:sticky lg:top-6">
+        <div ref={previewTopRef} className="scroll-mt-24 lg:sticky lg:top-24">
           <div className="mb-3 flex items-center justify-between gap-3">
             <p className="flex items-center gap-2 text-sm font-semibold text-forest">
               <span className="relative flex size-2.5">
@@ -151,7 +233,7 @@ export function CertificateStudio() {
           </div>
 
           <div className="mx-auto mt-5 max-w-[480px] lg:max-w-none">
-            <AnimatePresence mode="wait" initial={false}>
+            <AnimatePresence mode="popLayout" initial={false}>
               {generated ? (
                 <motion.div
                   key="actions"
@@ -165,7 +247,12 @@ export function CertificateStudio() {
                     exportKey={exportKey}
                     themeId={view.theme.id}
                     recipientName={view.isPlaceholder ? "" : view.name}
-                    enabled={validation.success}
+                    enabled={canExport}
+                    disabledHint={
+                      photoMissing
+                        ? "ডাউনলোড বা শেয়ারের আগে বন্ধুর ছবিটা দাও।"
+                        : "ডাউনলোড বা শেয়ার করার আগে বন্ধুর নামটা লিখে দাও।"
+                    }
                     onReset={handleReset}
                   />
                 </motion.div>

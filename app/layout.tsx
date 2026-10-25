@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Galada, Hind_Siliguri, Tiro_Bangla } from "next/font/google";
+import { Baloo_Da_2, Galada, Hind_Siliguri, Tiro_Bangla } from "next/font/google";
 import { siteConfig } from "@/lib/site-config";
 import "./globals.css";
 
@@ -15,6 +15,13 @@ const tiro = Tiro_Bangla({
   weight: "400",
   style: "normal",
   variable: "--font-tiro",
+  display: "swap",
+});
+
+const baloo = Baloo_Da_2({
+  subsets: ["bengali", "latin"],
+  weight: ["600", "700", "800"],
+  variable: "--font-baloo",
   display: "swap",
 });
 
@@ -65,7 +72,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="bn" className={`${hind.variable} ${tiro.variable} ${galada.variable}`}>
+    <html lang="bn" className={`${hind.variable} ${tiro.variable} ${galada.variable} ${baloo.variable}`}>
       <body className="min-h-dvh antialiased">{children}</body>
     </html>
   );

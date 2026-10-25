@@ -28,8 +28,8 @@ export function FinalCta() {
   }
 
   return (
-    <section aria-labelledby="cta-title" className="px-4 pb-16 sm:px-6 sm:pb-20">
-      <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[28px] bg-forest px-6 py-12 text-[#F4EEDD] sm:px-12 sm:py-14">
+    <section id="idea" aria-labelledby="cta-title" className="scroll-mt-24 px-4 pb-16 sm:px-6 sm:pb-20">
+      <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[28px] bg-[radial-gradient(120%_140%_at_0%_0%,#21503F_0%,#183D32_45%,#10291F_100%)] px-6 py-12 text-[#F4EEDD] shadow-[var(--shadow-lift)] sm:px-12 sm:py-14">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -right-20 -top-24 size-80 rounded-full border border-gold/25"
@@ -38,19 +38,36 @@ export function FinalCta() {
           aria-hidden="true"
           className="pointer-events-none absolute -right-8 -top-12 size-56 rounded-full border border-dashed border-gold/20"
         />
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 120 80"
+          className="pointer-events-none absolute bottom-6 right-[36%] hidden w-24 text-cream/25 lg:block"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M8 60 C30 70 50 40 70 46" strokeDasharray="4 6" />
+          <path d="M76 30 L114 14 L100 56 L88 42 Z M88 42 L114 14" />
+        </svg>
         <div className="relative grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-          <div>
+          <div className="flex items-start gap-5">
+            <span className="hidden size-16 shrink-0 place-items-center rounded-2xl bg-white/[0.07] text-gold ring-1 ring-white/10 sm:grid">
+              <Lightbulb className="size-8" aria-hidden="true" />
+            </span>
+            <div>
             <p className="inline-flex items-center gap-2 rounded-full bg-white/[0.07] px-3 py-1 text-sm text-gold">
-              <Lightbulb className="size-4" aria-hidden="true" />
               ৩০ দিনে ৩০ ওয়েবসাইট • Day ০১
             </p>
-            <h2 id="cta-title" className="mt-4 font-serif text-3xl leading-snug text-[#FBF7EC] sm:text-[2.5rem]">
-              কালকের ওয়েবসাইট কী নিয়ে হবে?
+            <h2 id="cta-title" className="mt-4 font-display text-3xl font-bold leading-snug text-cream sm:text-[2.5rem]">
+              তোমার কোনো আইডিয়া আছে?
             </h2>
             <p className="mt-3 max-w-lg leading-relaxed text-[#F4EEDD]/75">
               টাকা ফেরত না দিলেও চলবে, কিন্তু একটা মজার আইডিয়া দিতেই হবে! তোমার আইডিয়াটা হয়তো হবে পরের দিনের
               ওয়েবসাইট।
             </p>
+            </div>
           </div>
 
           {siteConfig.ideaUrl ? (

@@ -65,6 +65,10 @@ export function getAwardTitle(id: AwardTitleId): AwardTitle {
   return AWARD_TITLES.find((t) => t.id === id) ?? AWARD_TITLES[0]!;
 }
 
+/** The fixed citation printed above the award ribbon. */
+export const CITATION =
+  "টাকা ধার নিয়ে সময়মতো ফেরত না দেওয়ার অসাধারণ দক্ষতা, মিষ্টি প্রতিশ্রুতি এবং “কালকে দেবো” বলার অনন্য যোগ্যতায়";
+
 /* ------------------------------------------------------------------ */
 /* Themes                                                              */
 /* ------------------------------------------------------------------ */
@@ -76,22 +80,30 @@ export type CertificateTheme = {
   id: ThemeId;
   name: string;
   description: string;
-  /** Typeface used for the big heading and the recipient's name. */
-  display: "serif" | "script";
+  /** Typeface for the big heading and the recipient's name. */
+  display: "bold" | "script";
   decor: "classic" | "midnight" | "playful";
   colors: {
+    /** Thick outer band around the paper. */
+    band: string;
     paperBg: string;
-    frame: string;
     gold: string;
     goldSoft: string;
     ink: string;
     heading: string;
+    /** Bevel/shadow colour under the big heading. */
+    headingShadow: string;
     name: string;
     muted: string;
     ribbonBg: string;
+    ribbonBorder: string;
     ribbonText: string;
+    sealRim: string;
     sealInner: string;
     sealText: string;
+    sealRibbon: string;
+    /** Handwritten notes and doodles. */
+    note: string;
     accent: string;
     pattern: string;
   };
@@ -104,48 +116,56 @@ export const THEMES: readonly CertificateTheme[] = [
     id: "classic",
     name: "ক্লাসিক গোল্ড",
     description: "আইভরি কাগজ, বনসবুজ আর সোনালি কারুকাজ",
-    display: "serif",
+    display: "bold",
     decor: "classic",
     colors: {
-      paperBg:
-        "radial-gradient(120% 85% at 50% 0%, #FFFDF7 0%, #FBF6EA 52%, #F2E9D4 100%)",
-      frame: "#183D32",
-      gold: "#B08A3E",
-      goldSoft: "#D8BF86",
+      band: "#183D32",
+      paperBg: "radial-gradient(120% 85% at 50% 0%, #FFFDF6 0%, #FBF5E4 55%, #F3EAD2 100%)",
+      gold: "#B8913F",
+      goldSoft: "#DCC48C",
       ink: "#20251F",
       heading: "#183D32",
-      name: "#183D32",
-      muted: "#5F6358",
+      headingShadow: "#C9A552",
+      name: "#1B2E26",
+      muted: "#4F5A50",
       ribbonBg: "#183D32",
-      ribbonText: "#FAF3E1",
-      sealInner: "#183D32",
-      sealText: "#F6EACB",
-      accent: "#557963",
+      ribbonBorder: "#C7A45B",
+      ribbonText: "#F1DCA2",
+      sealRim: "#C29A45",
+      sealInner: "#E4C67E",
+      sealText: "#183D32",
+      sealRibbon: "#183D32",
+      note: "#1F4A3B",
+      accent: "#2C5A49",
       pattern: "#C7A45B",
     },
-    swatch: ["#FBF6EA", "#183D32", "#C7A45B"],
+    swatch: ["#FBF5E4", "#183D32", "#C7A45B"],
   },
   {
     id: "midnight",
     name: "মিডনাইট",
     description: "গভীর সবুজ জমিন, ক্রিম লেখা, সোনালি আভা",
-    display: "serif",
+    display: "bold",
     decor: "midnight",
     colors: {
-      paperBg:
-        "radial-gradient(120% 90% at 50% 0%, #21503F 0%, #153629 48%, #0C231A 100%)",
-      frame: "#C7A45B",
+      band: "#C7A45B",
+      paperBg: "radial-gradient(120% 90% at 50% 0%, #21503F 0%, #153629 48%, #0C231A 100%)",
       gold: "#D4B46E",
       goldSoft: "#7E6E45",
       ink: "#F2EAD6",
-      heading: "#F2EAD6",
-      name: "#EBD293",
-      muted: "#BDB6A0",
-      ribbonBg: "#C7A45B",
-      ribbonText: "#10291F",
-      sealInner: "#0E261C",
-      sealText: "#EBD293",
-      accent: "#9FC2AC",
+      heading: "#F6EBCF",
+      headingShadow: "#B8913F",
+      name: "#F1D791",
+      muted: "#C4BDA6",
+      ribbonBg: "#0E261C",
+      ribbonBorder: "#D4B46E",
+      ribbonText: "#F1D791",
+      sealRim: "#C29A45",
+      sealInner: "#E4C67E",
+      sealText: "#10291F",
+      sealRibbon: "#C7A45B",
+      note: "#E9D49B",
+      accent: "#A9CBB6",
       pattern: "#C7A45B",
     },
     swatch: ["#153629", "#F2EAD6", "#C7A45B"],
@@ -157,19 +177,23 @@ export const THEMES: readonly CertificateTheme[] = [
     display: "script",
     decor: "playful",
     colors: {
-      paperBg:
-        "radial-gradient(120% 90% at 20% 0%, #FFF9EF 0%, #FFF1E2 55%, #FDE5D3 100%)",
-      frame: "#E9765B",
+      band: "#E9765B",
+      paperBg: "radial-gradient(120% 90% at 20% 0%, #FFF9EF 0%, #FFF1E2 55%, #FDE5D3 100%)",
       gold: "#DDA23A",
       goldSoft: "#F2CF88",
       ink: "#3B2A24",
       heading: "#2E6A57",
+      headingShadow: "#F2B58F",
       name: "#C94F36",
-      muted: "#7E655A",
+      muted: "#6F584D",
       ribbonBg: "#2E6A57",
-      ribbonText: "#FFF8EC",
-      sealInner: "#E9765B",
-      sealText: "#FFF8EC",
+      ribbonBorder: "#F2CF88",
+      ribbonText: "#FFF3DA",
+      sealRim: "#DDA23A",
+      sealInner: "#F7D27A",
+      sealText: "#7A3322",
+      sealRibbon: "#E9765B",
+      note: "#2E6A57",
       accent: "#2E6A57",
       pattern: "#E9765B",
     },
@@ -197,6 +221,10 @@ export type CertificateView = {
   dateLabel: string;
   serial: string;
   theme: CertificateTheme;
+  /** Photo layout: shows a circular photo of the friend (or a placeholder until one is chosen). */
+  photoMode?: boolean;
+  /** Local data URL of the friend's photo. */
+  photo?: string | null;
 };
 
 /** A short, playful, deterministic "serial number" derived from the name. */
@@ -211,10 +239,10 @@ export function serialFor(name: string): string {
 /** Pick a font size so long names still fit on the certificate. */
 export function nameFontSize(name: string, display: CertificateTheme["display"]): number {
   const len = Array.from(name).length;
-  const base = display === "script" ? 62 : 58;
+  const base = display === "script" ? 46 : 42;
   if (len <= 9) return base;
-  if (len <= 14) return base - 8;
-  if (len <= 20) return base - 15;
-  if (len <= 28) return base - 21;
-  return base - 25;
+  if (len <= 14) return base - 5;
+  if (len <= 20) return base - 10;
+  if (len <= 28) return base - 14;
+  return base - 17;
 }

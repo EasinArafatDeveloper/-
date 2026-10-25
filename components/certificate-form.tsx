@@ -1,7 +1,8 @@
 "use client";
 
 import type { FormEvent, Ref } from "react";
-import { Check, PenLine, Sparkles } from "lucide-react";
+import { Check, FileText, ImagePlus, PenLine, Sparkles } from "lucide-react";
+import { PhotoPicker } from "./photo-picker";
 import {
   AWARD_TITLES,
   CUSTOM_TITLE_ID,
@@ -16,13 +17,28 @@ import { LIMITS, type CertificateFormValues, type FieldErrors } from "@/lib/vali
 import { charCount, cn, toBengaliDigits } from "@/lib/utils";
 import { Button } from "./ui/button";
 
+export type CardMode = "simple" | "photo";
+
 type Props = {
   values: CertificateFormValues;
   errors: FieldErrors;
   onChange: <K extends keyof CertificateFormValues>(key: K, value: CertificateFormValues[K]) => void;
   onSubmit: () => void;
   nameInputRef: Ref<HTMLInputElement>;
+  mode: CardMode;
+  onModeChange: (mode: CardMode) => void;
+  photo: string | null;
+  photoBusy: boolean;
+  photoError: string | null;
+  onPhotoPick: (file: File) => void;
+  onPhotoRemove: () => void;
+  photoButtonRef: Ref<HTMLButtonElement>;
 };
+
+const MODES = [
+  { id: "simple", icon: FileText, title: "সাধারণ", body: "শুধু নাম আর টাইটেল" },
+  { id: "photo", icon: ImagePlus, title: "বন্ধুর ছবিসহ", body: "মাঝখানে বন্ধুর ছবি" },
+] as const;
 
 const inputClass =
   "w-full rounded-xl border border-line bg-surface px-4 text-[1.02rem] text-ink placeholder:text-muted/70 transition-[border-color,box-shadow] duration-200 hover:border-sage/40 focus:border-forest focus:outline-none focus:ring-4 focus:ring-forest/10";
@@ -48,7 +64,21 @@ function FieldLabel({ htmlFor, children, hint }: { htmlFor: string; children: Re
   );
 }
 
-export function CertificateForm({ values, errors, onChange, onSubmit, nameInputRef }: Props) {
+export function CertificateForm({
+  values,
+  errors,
+  onChange,
+  onSubmit,
+  nameInputRef,
+  mode,
+  onModeChange,
+  photo,
+  photoBusy,
+  photoError,
+  onPhotoPick,
+  onPhotoRemove,
+  photoButtonRef,
+}: Props) {
   const isCustom = values.titleId === CUSTOM_TITLE_ID;
   const taglinePlaceholder = isCustom
     ? CUSTOM_TITLE_TAGLINE
@@ -61,6 +91,63 @@ export function CertificateForm({ values, errors, onChange, onSubmit, nameInputR
 
   return (
     <form noValidate onSubmit={handleSubmit} className="space-y-7" aria-label="সার্টিফিকেট কাস্টমাইজ করো">
+      {/* Card type */}
+      <fieldset className="space-y-3">
+        <legend className="text-[0.95rem] font-semibold text-ink">সার্টিফিকেটের ধরন</legend>
+        <div className="grid grid-cols-2 gap-2.5">
+          {MODES.map((m) => {
+            const checked = mode === m.id;
+            return (
+              <label
+                key={m.id}
+                className={cn(
+                  "relative flex cursor-pointer items-center gap-3 rounded-xl border px-3.5 py-3 transition-[border-color,background-color,box-shadow] duration-200",
+                  "has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-forest",
+                  checked
+                    ? "border-forest bg-forest/[0.045] shadow-[0_0_0_1px_var(--color-forest)_inset]"
+                    : "border-line bg-surface hover:border-sage/45",
+                )}
+              >
+                <input
+                  type="radio"
+                  name="card-mode"
+                  value={m.id}
+                  checked={checked}
+                  onChange={() => onModeChange(m.id)}
+                  className="sr-only"
+                />
+                <span
+                  className={cn(
+                    "grid size-10 shrink-0 place-items-center rounded-lg transition-colors",
+                    checked ? "bg-forest text-cream" : "bg-mint text-forest",
+                  )}
+                  aria-hidden="true"
+                >
+                  <m.icon className="size-5" />
+                </span>
+                <span className="min-w-0">
+                  <span className={cn("block leading-tight", checked ? "font-semibold text-forest" : "font-medium text-ink")}>
+                    {m.title}
+                  </span>
+                  <span className="block text-xs text-muted">{m.body}</span>
+                </span>
+              </label>
+            );
+          })}
+        </div>
+      </fieldset>
+
+      {mode === "photo" && (
+        <PhotoPicker
+          photo={photo}
+          busy={photoBusy}
+          error={photoError}
+          onPick={onPhotoPick}
+          onRemove={onPhotoRemove}
+          buttonRef={photoButtonRef}
+        />
+      )}
+
       {/* Name */}
       <div className="space-y-2">
         <div className="flex items-end justify-between gap-3">

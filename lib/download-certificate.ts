@@ -24,9 +24,33 @@ async function waitForFonts(node: HTMLElement): Promise<void> {
   await document.fonts.ready;
 }
 
-/** Render the certificate DOM node to a PNG blob. Never includes anything outside the node. */
-export async function renderCertificateBlob(node: HTMLElement, cacheKey: string): Promise<Blob> {
+const EXPORT_TIMEOUT_MS = 25_000;
+
+/** Render the certificate DOM node to a PNG blob. Gives up after a timeout instead of hanging. */
+export function renderCertificateBlob(node: HTMLElement, cacheKey: string): Promise<Blob> {
+  return new Promise<Blob>((resolve, reject) => {
+    const timer = window.setTimeout(() => reject(new Error("Export timed out")), EXPORT_TIMEOUT_MS);
+    renderBlob(node, cacheKey).then(
+      (blob) => {
+        window.clearTimeout(timer);
+        resolve(blob);
+      },
+      (error: unknown) => {
+        window.clearTimeout(timer);
+        reject(error);
+      },
+    );
+  });
+}
+
+async function renderBlob(node: HTMLElement, cacheKey: string): Promise<Blob> {
   await waitForFonts(node);
+  // Make sure the friend's photo (if any) is decoded before capture.
+  await Promise.all(
+    Array.from(node.querySelectorAll("img")).map((img) =>
+      img.complete && img.naturalWidth > 0 ? Promise.resolve() : img.decode().catch(() => undefined),
+    ),
+  );
 
   let fontCss = fontCssCache.get(cacheKey);
   if (!fontCss) {

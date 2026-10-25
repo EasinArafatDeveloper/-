@@ -25,10 +25,10 @@ const FAQS = [
 
 export function FaqSection() {
   return (
-    <section id="faq" aria-labelledby="faq-title" className="border-t border-line/70">
+    <section id="faq" aria-labelledby="faq-title" className="scroll-mt-20">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-[0.8fr_1.2fr]">
         <div>
-          <h2 id="faq-title" className="font-serif text-3xl leading-tight text-forest sm:text-[2.4rem]">
+          <h2 id="faq-title" className="font-display text-[2rem] font-bold leading-tight text-forest sm:text-[2.5rem]">
             টুকটাক প্রশ্ন
           </h2>
           <p className="mt-3 max-w-sm text-muted">যা জানতে মন চায়, তার উত্তর এখানে।</p>
